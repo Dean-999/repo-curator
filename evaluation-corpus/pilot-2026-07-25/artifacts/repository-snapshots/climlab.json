@@ -1,0 +1,18 @@
+{
+  "schema_version": "repo-curator.repository-snapshot-descriptor.v1",
+  "repository_id": "climlab",
+  "repository_family": "climate-process-modeling",
+  "repository_type": "computational-research",
+  "source_url": "https://github.com/climlab/climlab",
+  "git_commit_sha": "fcbde377d131d98b05e2e9d0729d9a22ec60bd18",
+  "git_tree_sha": "59aa42cbe9e3f98da6600b09c56f45a83d4d72a4",
+  "authored_at": "2026-07-23T14:44:06Z",
+  "committed_at": "2026-07-23T14:44:06Z",
+  "retrieved_at": "2026-07-25T07:47:03Z",
+  "acquisition": "github-api-read-only",
+  "limitations": [
+    "Identifies a remote Git object at retrieval time.",
+    "Does not retain a full repository checkout or external data dependencies.",
+    "Does not execute target-repository content."
+  ]
+}

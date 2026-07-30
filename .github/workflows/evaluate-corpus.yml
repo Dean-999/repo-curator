@@ -1,0 +1,65 @@
+name: Evaluate Corpus
+
+on:
+  workflow_dispatch:
+    inputs:
+      corpus_path:
+        description: Repository-relative path to an immutable v2 corpus bundle
+        required: true
+        default: evaluation-corpus
+
+permissions:
+  contents: read
+
+jobs:
+  evaluate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.9"
+      - name: Verify corpus artifacts
+        env:
+          CORPUS_PATH: ${{ inputs.corpus_path }}
+        run: |
+          test -d "$CORPUS_PATH"
+          python3 -m repo_curator corpus-verify \
+            --cases "$CORPUS_PATH/gold-cases.json" \
+            --risk-cases "$CORPUS_PATH/mutation-risk-cases.json" \
+            --reviewer-registry "$CORPUS_PATH/reviewer-provenance.json" \
+            --artifact-ledger "$CORPUS_PATH/artifact-ledger.json" \
+            --artifact-root "$CORPUS_PATH/artifacts" \
+            --output "$RUNNER_TEMP/artifact-verification.json"
+      - name: Evaluate admission gates
+        env:
+          CORPUS_PATH: ${{ inputs.corpus_path }}
+        run: |
+          python3 -m repo_curator evaluate \
+            --cases "$CORPUS_PATH/gold-cases.json" \
+            --risk-cases "$CORPUS_PATH/mutation-risk-cases.json" \
+            --manifest "$CORPUS_PATH/corpus-manifest.json" \
+            --artifact-ledger "$CORPUS_PATH/artifact-ledger.json" \
+            --artifact-root "$CORPUS_PATH/artifacts" \
+            --created-at "$(date -u +'%Y-%m-%dT%H:%M:%SZ')" \
+            --output "$RUNNER_TEMP/admission-report.json"
+      - name: Publish descriptive calibration slices
+        env:
+          CORPUS_PATH: ${{ inputs.corpus_path }}
+        run: |
+          python3 -m repo_curator calibrate \
+            --cases "$CORPUS_PATH/gold-cases.json" \
+            --risk-cases "$CORPUS_PATH/mutation-risk-cases.json" \
+            --manifest "$CORPUS_PATH/corpus-manifest.json" \
+            --created-at "$(date -u +'%Y-%m-%dT%H:%M:%SZ')" \
+            --output "$RUNNER_TEMP/calibration-report.json"
+      - name: Retain corpus evaluation artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: corpus-evaluation-${{ github.run_id }}
+          if-no-files-found: warn
+          path: |
+            ${{ runner.temp }}/artifact-verification.json
+            ${{ runner.temp }}/admission-report.json
+            ${{ runner.temp }}/calibration-report.json

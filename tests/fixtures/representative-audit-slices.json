@@ -1,0 +1,81 @@
+{
+  "schema_version": "repo-curator.representative-audit-slices.v1",
+  "purpose": "Content-minimized offline regression oracles; not admission evidence and not a claim of target execution or reproduction.",
+  "cases": [
+    {
+      "repository_id": "nf-core-rnaseq",
+      "repository_family": "bioinformatics-workflow",
+      "source_url": "https://github.com/nf-core/rnaseq",
+      "source_commit": "1f03b53ef799e298f60c813440e961e867017043",
+      "license": "MIT",
+      "selection_reason": "Representative declarative Nextflow workflow with deterministic duplicate evidence.",
+      "run_id": "pilot-20260725-nf-core-rnaseq-history",
+      "source_members": {
+        "relationships.jsonl": "sha256:d95e2d76c2649a20e720af8226b436d0989cea220bbe8a4b30c51e6e21f32cbd",
+        "recommendations.jsonl": "sha256:fa34790d1745c74d7a8a65ef68b52ce1ba097124d0b36074b99aa81da7b473b9"
+      },
+      "positive_observation": {
+        "relationship_type": "EXACT_BYTE_DUPLICATE",
+        "content_id": "sha256-file-v1:05bc5a6078a34613d52ddae1ddda20028af7be61d24975ac015d88b4536433ee",
+        "member_count": 2
+      },
+      "limitation": "EQUAL_BYTES_DO_NOT_ESTABLISH_COMMON_LINEAGE_OR_PURPOSE",
+      "conservative_outcome": {
+        "recommendation_type": "MANUAL_REVIEW",
+        "evidence_coverage": "INSUFFICIENT",
+        "executable_in_supported_scope": false,
+        "shadow_mode": true
+      }
+    },
+    {
+      "repository_id": "nipreps-fmriprep",
+      "repository_family": "neuroimaging-pipeline",
+      "source_url": "https://github.com/nipreps/fmriprep",
+      "source_commit": "eb167b9ffb4bf2b90bf86457748e921887ef64a1",
+      "license": "Apache-2.0",
+      "selection_reason": "Representative Python neuroimaging pipeline with a multi-member duplicate group.",
+      "run_id": "pilot-20260725-nipreps-fmriprep-history",
+      "source_members": {
+        "relationships.jsonl": "sha256:3d8f398f1f19c4c05776680d9810fd9af86ad02ddf91478836f536a2953b08c0",
+        "recommendations.jsonl": "sha256:7e04d429f0774c6df9e097ff93c57ee6d15bc90ed63de06918164236868cefd0"
+      },
+      "positive_observation": {
+        "relationship_type": "EXACT_BYTE_DUPLICATE",
+        "content_id": "sha256-file-v1:0d048a5948e97f3d34000b9c3921bf4a6cde48bc1e5fe4500715d8a06267df63",
+        "member_count": 4
+      },
+      "limitation": "EQUAL_BYTES_DO_NOT_ESTABLISH_COMMON_LINEAGE_OR_PURPOSE",
+      "conservative_outcome": {
+        "recommendation_type": "MANUAL_REVIEW",
+        "evidence_coverage": "INSUFFICIENT",
+        "executable_in_supported_scope": false,
+        "shadow_mode": true
+      }
+    },
+    {
+      "repository_id": "climlab",
+      "repository_family": "climate-process-modeling",
+      "source_url": "https://github.com/climlab/climlab",
+      "source_commit": "fcbde377d131d98b05e2e9d0729d9a22ec60bd18",
+      "license": "MIT",
+      "selection_reason": "Representative Python climate-modeling repository with conservative duplicate interpretation.",
+      "run_id": "pilot-20260725-climlab-history",
+      "source_members": {
+        "relationships.jsonl": "sha256:27e1419e79ab8602ba7bddd61fec1bf7f2602700eb90311f16a607cc583d1268",
+        "recommendations.jsonl": "sha256:3db4b476e91cb7153a9ae92a7be08617c68e7ffe4e19172eaae5d896add76613"
+      },
+      "positive_observation": {
+        "relationship_type": "EXACT_BYTE_DUPLICATE",
+        "content_id": "sha256-file-v1:58f5661f510aafe581c1cf689bb59f5c9319b9d7462d23380b3b51426952f958",
+        "member_count": 2
+      },
+      "limitation": "EQUAL_BYTES_DO_NOT_ESTABLISH_COMMON_LINEAGE_OR_PURPOSE",
+      "conservative_outcome": {
+        "recommendation_type": "MANUAL_REVIEW",
+        "evidence_coverage": "INSUFFICIENT",
+        "executable_in_supported_scope": false,
+        "shadow_mode": true
+      }
+    }
+  ]
+}

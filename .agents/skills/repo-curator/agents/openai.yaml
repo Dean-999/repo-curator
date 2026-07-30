@@ -1,0 +1,6 @@
+interface:
+  display_name: "Repo Curator"
+  short_description: "Recover evidence and plan safe research repository curation"
+  default_prompt: "Use $repo-curator to audit this computational research repository and explain the safest curation decisions."
+policy:
+  allow_implicit_invocation: false

@@ -1,0 +1,3 @@
+# Make repo-curator a Skill for computational research repositories
+
+repo-curator is delivered as an explicitly invoked reusable Skill and initially supports computational research repositories whose evidence is carried by code, data, configurations, environments, runs, results, figures, tables, and publication materials. We reject a general scientific-project or laboratory-management boundary because wet-lab samples, instruments, consent, LIMS, ELN, and administrative records require different domain models, safety obligations, and validation evidence; keeping that scope out makes the product's claims testable and lets it compose with established computational-research standards and tools.

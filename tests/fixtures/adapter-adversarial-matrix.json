@@ -1,0 +1,89 @@
+{
+  "adapters": {
+    "data-package": {
+      "global-resource-limit": "tests.test_data_package_observer.DataPackageObserverTest.test_observer_bounds_resources_and_paths",
+      "internally-inconsistent": "tests.test_data_package_observer.DataPackageObserverTest.test_observer_distinguishes_non_regular_local_resource_from_missing",
+      "malformed": "tests.test_data_package_observer.DataPackageObserverTest.test_audit_emits_one_observation_per_descriptor_and_retains_malformed_json",
+      "missing-reference": "tests.test_data_package_observer.DataPackageObserverTest.test_observer_distinguishes_non_regular_local_resource_from_missing",
+      "oversized": "tests.test_data_package_observer.DataPackageObserverTest.test_observer_bounds_resources_and_paths",
+      "path-escape": "tests.test_data_package_observer.DataPackageObserverTest.test_observer_bounds_resources_and_paths",
+      "secret-bearing-payload": "tests.test_data_package_observer.DataPackageObserverTest.test_observer_reports_bounded_resource_structure_without_payload_values",
+      "stale-export": "tests.test_supplied_export_scenario.SuppliedExportScenarioTest.test_unbound_or_unsafe_export_is_rejected_before_run_publication",
+      "symlink-replacement": "tests.test_supplied_export_scenario.SuppliedExportScenarioTest.test_payload_path_escape_and_symbolic_link_are_rejected",
+      "unsupported-version": "tests.test_supplied_export_scenario.SuppliedExportScenarioTest.test_workflow_schema_family_mismatch_is_rejected_before_publication"
+    },
+    "environment-declaration": {
+      "global-resource-limit": "tests.test_environment_declarations.EnvironmentDeclarationsTest.test_conflicting_binder_scopes_mark_every_declaration_unresolved",
+      "internally-inconsistent": "tests.test_environment_declarations.EnvironmentDeclarationsTest.test_conflicting_binder_scopes_mark_every_declaration_unresolved",
+      "malformed": "tests.test_environment_declarations.EnvironmentDeclarationsTest.test_empty_active_binder_scope_retains_shadowed_root_evidence",
+      "missing-reference": "tests.test_environment_declarations.EnvironmentDeclarationsTest.test_returns_none_without_a_root_or_binder_marker",
+      "oversized": "tests.test_environment_declarations.EnvironmentDeclarationsTest.test_root_scope_records_deprecated_and_executable_declarations",
+      "path-escape": "tests.test_environment_declarations.EnvironmentDeclarationsTest.test_dot_binder_scope_shadows_root_and_ignores_root_only_marker_inside_scope",
+      "secret-bearing-payload": "tests.test_environment_declarations.EnvironmentDeclarationsTest.test_root_scope_records_deprecated_and_executable_declarations",
+      "stale-export": "tests.test_supplied_export_scenario.SuppliedExportScenarioTest.test_unbound_or_unsafe_export_is_rejected_before_run_publication",
+      "symlink-replacement": "tests.test_supplied_export_scenario.SuppliedExportScenarioTest.test_payload_path_escape_and_symbolic_link_are_rejected",
+      "unsupported-version": "tests.test_supplied_export_scenario.SuppliedExportScenarioTest.test_workflow_schema_family_mismatch_is_rejected_before_publication"
+    },
+    "notebook-envelope": {
+      "global-resource-limit": "tests.test_notebook_envelope.NotebookEnvelopeTest.test_bounds_cells_outputs_and_declared_metadata_strings",
+      "internally-inconsistent": "tests.test_notebook_envelope.NotebookEnvelopeTest.test_requires_explicit_version_and_v4_cells",
+      "malformed": "tests.test_notebook_envelope.NotebookEnvelopeTest.test_rejects_truncated_non_json_and_non_object_envelopes",
+      "missing-reference": "tests.test_notebook_envelope.NotebookEnvelopeTest.test_requires_explicit_version_and_v4_cells",
+      "oversized": "tests.test_notebook_envelope.NotebookEnvelopeTest.test_bounds_cells_outputs_and_declared_metadata_strings",
+      "path-escape": "tests.test_notebook_envelope.NotebookEnvelopeTest.test_unreadable_or_ineligible_notebook_is_not_misclassified_as_malformed",
+      "secret-bearing-payload": "tests.test_parser_fuzz_scenario.ParserFuzzScenarioTest.test_notebook_parser_never_echoes_prompt_or_secret_from_mutated_bytes",
+      "stale-export": "tests.test_supplied_export_scenario.SuppliedExportScenarioTest.test_unbound_or_unsafe_export_is_rejected_before_run_publication",
+      "symlink-replacement": "tests.test_supplied_export_scenario.SuppliedExportScenarioTest.test_payload_path_escape_and_symbolic_link_are_rejected",
+      "unsupported-version": "tests.test_notebook_envelope.NotebookEnvelopeTest.test_older_versions_are_retained_without_conversion_or_cell_guessing"
+    },
+    "research-metadata": {
+      "global-resource-limit": "tests.test_research_metadata_observer.ResearchMetadataObserverTest.test_signac_marker_retention_is_bounded_and_deterministic",
+      "internally-inconsistent": "tests.test_research_metadata_observer.ResearchMetadataObserverTest.test_malformed_codemeta_is_retained_without_signac_false_positive",
+      "malformed": "tests.test_research_metadata_observer.ResearchMetadataObserverTest.test_malformed_codemeta_is_retained_without_signac_false_positive",
+      "missing-reference": "tests.test_research_metadata_observer.ResearchMetadataObserverTest.test_cff_and_codemeta_profile_suppression_matches_exact_root_contract",
+      "oversized": "tests.test_research_metadata_observer.ResearchMetadataObserverTest.test_codemeta_size_boundary_is_explicit",
+      "path-escape": "tests.test_research_metadata_observer.ResearchMetadataObserverTest.test_cff_and_codemeta_profile_suppression_matches_exact_root_contract",
+      "secret-bearing-payload": "tests.test_research_metadata_observer.ResearchMetadataObserverTest.test_audit_observes_cff_codemeta_and_signac_without_persisting_values",
+      "stale-export": "tests.test_supplied_export_scenario.SuppliedExportScenarioTest.test_unbound_or_unsafe_export_is_rejected_before_run_publication",
+      "symlink-replacement": "tests.test_supplied_export_scenario.SuppliedExportScenarioTest.test_payload_path_escape_and_symbolic_link_are_rejected",
+      "unsupported-version": "tests.test_supplied_export_scenario.SuppliedExportScenarioTest.test_workflow_schema_family_mismatch_is_rejected_before_publication"
+    },
+    "ro-crate-graph": {
+      "global-resource-limit": "tests.test_ro_crate_graph.RoCrateGraphTest.test_bounds_reference_records_and_external_and_unresolved_identifier_lists",
+      "internally-inconsistent": "tests.test_ro_crate_graph.RoCrateGraphTest.test_bounds_entities_and_types_and_rejects_malformed_or_duplicate_ids",
+      "malformed": "tests.test_ro_crate_graph.RoCrateGraphTest.test_rejects_missing_context_or_non_list_graph",
+      "missing-reference": "tests.test_ro_crate_graph.RoCrateGraphTest.test_bounds_reference_records_and_external_and_unresolved_identifier_lists",
+      "oversized": "tests.test_ro_crate_graph.RoCrateGraphTest.test_bounds_nested_value_traversal",
+      "path-escape": "tests.test_supplied_export_scenario.SuppliedExportScenarioTest.test_payload_path_escape_and_symbolic_link_are_rejected",
+      "secret-bearing-payload": "tests.test_parser_fuzz_scenario.ParserFuzzScenarioTest.test_notebook_parser_never_echoes_prompt_or_secret_from_mutated_bytes",
+      "stale-export": "tests.test_supplied_export_scenario.SuppliedExportScenarioTest.test_unbound_or_unsafe_export_is_rejected_before_run_publication",
+      "symlink-replacement": "tests.test_supplied_export_scenario.SuppliedExportScenarioTest.test_payload_path_escape_and_symbolic_link_are_rejected",
+      "unsupported-version": "tests.test_ro_crate_graph.RoCrateGraphTest.test_reports_each_descriptor_and_root_failure_without_guessing"
+    },
+    "supplied-export": {
+      "global-resource-limit": "tests.test_supplied_export_scenario.SuppliedExportScenarioTest.test_supplied_export_count_is_bounded_before_publication",
+      "internally-inconsistent": "tests.test_supplied_export_scenario.SuppliedExportScenarioTest.test_workflow_schema_family_mismatch_is_rejected_before_publication",
+      "malformed": "tests.test_supplied_export_scenario.SuppliedExportScenarioTest.test_malformed_workflow_root_is_explicitly_unavailable",
+      "missing-reference": "tests.test_supplied_export_scenario.SuppliedExportScenarioTest.test_unbound_or_unsafe_export_is_rejected_before_run_publication",
+      "oversized": "tests.test_supplied_export_scenario.SuppliedExportScenarioTest.test_supplied_export_count_is_bounded_before_publication",
+      "path-escape": "tests.test_supplied_export_scenario.SuppliedExportScenarioTest.test_payload_path_escape_and_symbolic_link_are_rejected",
+      "secret-bearing-payload": "tests.test_supplied_export_scenario.SuppliedExportScenarioTest.test_supplied_payload_cannot_assign_local_declaration_classification",
+      "stale-export": "tests.test_supplied_export_scenario.SuppliedExportScenarioTest.test_unbound_or_unsafe_export_is_rejected_before_run_publication",
+      "symlink-replacement": "tests.test_supplied_export_scenario.SuppliedExportScenarioTest.test_payload_path_escape_and_symbolic_link_are_rejected",
+      "unsupported-version": "tests.test_supplied_export_scenario.SuppliedExportScenarioTest.test_workflow_schema_family_mismatch_is_rejected_before_publication"
+    },
+    "workflow-run-ro-crate": {
+      "global-resource-limit": "tests.test_workflow_run_crate.WorkflowRunCrateTest.test_bounds_actions_and_references_with_explicit_omission_counts",
+      "internally-inconsistent": "tests.test_workflow_run_crate.WorkflowRunCrateTest.test_malformed_action_references_are_counted_and_limited",
+      "malformed": "tests.test_workflow_run_crate.WorkflowRunCrateTest.test_malformed_crate_root_is_retained_as_a_limitation",
+      "missing-reference": "tests.test_metamorphic_scenario.MetamorphicScenarioTest.test_removing_evidence_weakens_reference_coverage_without_adding_authority",
+      "oversized": "tests.test_workflow_run_crate.WorkflowRunCrateTest.test_bounds_actions_and_references_with_explicit_omission_counts",
+      "path-escape": "tests.test_supplied_export_scenario.SuppliedExportScenarioTest.test_payload_path_escape_and_symbolic_link_are_rejected",
+      "secret-bearing-payload": "tests.test_supplied_export_scenario.SuppliedExportScenarioTest.test_supplied_payload_cannot_assign_local_declaration_classification",
+      "stale-export": "tests.test_supplied_export_scenario.SuppliedExportScenarioTest.test_unbound_or_unsafe_export_is_rejected_before_run_publication",
+      "symlink-replacement": "tests.test_supplied_export_scenario.SuppliedExportScenarioTest.test_payload_path_escape_and_symbolic_link_are_rejected",
+      "unsupported-version": "tests.test_supplied_export_scenario.SuppliedExportScenarioTest.test_workflow_schema_family_mismatch_is_rejected_before_publication"
+    }
+  },
+  "schema_version": "repo-curator.adapter-adversarial-matrix.v1"
+}

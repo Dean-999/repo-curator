@@ -1,0 +1,18 @@
+{
+  "schema_version": "repo-curator.repository-snapshot-descriptor.v1",
+  "repository_id": "deepmd-kit",
+  "repository_family": "molecular-dynamics",
+  "repository_type": "computational-research",
+  "source_url": "https://github.com/deepmodeling/deepmd-kit",
+  "git_commit_sha": "cc908a879ab1510165c5cee1c4a2e6d5ee5f6bd3",
+  "git_tree_sha": "096c28c434ff08acef0ca151a8a778e929c34114",
+  "authored_at": "2026-07-26T04:42:32Z",
+  "committed_at": "2026-07-26T04:42:32Z",
+  "retrieved_at": "2026-07-26T14:36:08Z",
+  "acquisition": "github-api-read-only",
+  "limitations": [
+    "Identifies a remote Git object at retrieval time.",
+    "Does not retain a full repository checkout or external data dependencies.",
+    "Does not execute target-repository content."
+  ]
+}

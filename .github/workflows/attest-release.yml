@@ -1,0 +1,40 @@
+name: Attest Release
+
+on:
+  workflow_dispatch:
+    inputs:
+      release_tag:
+        description: Existing release tag whose Skill tarball will be attested
+        required: true
+
+permissions:
+  contents: read
+  id-token: write
+  attestations: write
+
+jobs:
+  attest:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          ref: ${{ inputs.release_tag }}
+      - name: Download immutable release inputs
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RELEASE_TAG: ${{ inputs.release_tag }}
+        run: |
+          mkdir release-assets
+          gh release download "$RELEASE_TAG" --dir release-assets
+          cd release-assets
+          sha256sum --check SHA256SUMS
+      - name: Attest Skill archive
+        if: ${{ ! github.event.repository.private }}
+        uses: actions/attest-build-provenance@977bb373ede98d70efdf65b84cb5f73e068dcc2a
+        with:
+          subject-path: release-assets/repo-curator-skill-*.tar.gz
+      - name: Record unavailable hosted attestation
+        if: ${{ github.event.repository.private }}
+        run: |
+          echo "::notice::GitHub artifact attestations are unavailable for user-owned private repositories"
+          echo "HOSTED_ATTESTATION_UNAVAILABLE_PRIVATE_REPOSITORY" >> "$GITHUB_STEP_SUMMARY"

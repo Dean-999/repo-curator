@@ -1,0 +1,18 @@
+{
+  "schema_version": "repo-curator.repository-snapshot-descriptor.v1",
+  "repository_id": "multiphysics-bench",
+  "repository_family": "scientific-ml-benchmark",
+  "repository_type": "computational-research",
+  "source_url": "https://github.com/xie-lab-ml/multiphysics-bench",
+  "git_commit_sha": "1195b44915712929d605ee5076a831c7124ead93",
+  "git_tree_sha": "830bb233009d71edbcd577256b099b0ab89f6a29",
+  "authored_at": "2025-05-29T15:57:12Z",
+  "committed_at": "2025-05-29T15:57:12Z",
+  "retrieved_at": "2026-07-25T07:47:03Z",
+  "acquisition": "github-api-read-only",
+  "limitations": [
+    "Identifies a remote Git object at retrieval time.",
+    "Does not retain a full repository checkout or external data dependencies.",
+    "Does not execute target-repository content."
+  ]
+}

@@ -1,0 +1,3 @@
+# Separate the Skill shell, deterministic safety kernel, and read-only adapters
+
+The repo-curator Skill is the product interface and owns interaction, semantic reasoning, and orchestration; dependency-minimized bundled scripts own deterministic filesystem and transaction safety; optional adapters only import existing external records as untrusted, coverage-limited evidence. We reject both a pure-prompt Skill, because model behavior cannot enforce exact-byte and filesystem invariants, and a standalone CLI product or auto-installing plugin platform, because those shapes expand the execution and dependency surface before the curation contracts are stable.

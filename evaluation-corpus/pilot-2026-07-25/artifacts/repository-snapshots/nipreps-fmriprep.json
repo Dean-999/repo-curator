@@ -1,0 +1,18 @@
+{
+  "schema_version": "repo-curator.repository-snapshot-descriptor.v1",
+  "repository_id": "nipreps-fmriprep",
+  "repository_family": "neuroimaging-pipeline",
+  "repository_type": "computational-research",
+  "source_url": "https://github.com/nipreps/fmriprep",
+  "git_commit_sha": "eb167b9ffb4bf2b90bf86457748e921887ef64a1",
+  "git_tree_sha": "1a623e7edb995b2f9490b3d78d0011ec2175c56d",
+  "authored_at": "2026-06-17T23:16:55Z",
+  "committed_at": "2026-06-17T23:16:55Z",
+  "retrieved_at": "2026-07-25T07:47:03Z",
+  "acquisition": "github-api-read-only",
+  "limitations": [
+    "Identifies a remote Git object at retrieval time.",
+    "Does not retain a full repository checkout or external data dependencies.",
+    "Does not execute target-repository content."
+  ]
+}

@@ -1,0 +1,32 @@
+name: upstream review
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "17 3 1 * *"
+
+permissions:
+  contents: read
+
+jobs:
+  review:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.9"
+      - name: Review locked upstream metadata
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: >-
+          python3 tools/check_upstreams.py
+          --checked-at "$(date -u +%Y-%m-%dT%H:%M:%SZ)"
+          --output "$RUNNER_TEMP/upstream-review.json"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: upstream-review
+          path: ${{ runner.temp }}/upstream-review.json
+          if-no-files-found: error
+          retention-days: 90

@@ -1,0 +1,18 @@
+{
+  "schema_version": "repo-curator.repository-snapshot-descriptor.v1",
+  "repository_id": "deepvariant",
+  "repository_family": "bioinformatics-variant-calling",
+  "repository_type": "computational-research",
+  "source_url": "https://github.com/google/deepvariant",
+  "git_commit_sha": "45f2627504c59785ea2b88d0256a2ec347bce7b4",
+  "git_tree_sha": "e45d617dc37fc02b2e92de7f6461c4760b1b96da",
+  "authored_at": "2026-03-19T04:57:17Z",
+  "committed_at": "2026-03-19T04:57:17Z",
+  "retrieved_at": "2026-07-26T14:36:08Z",
+  "acquisition": "github-api-read-only",
+  "limitations": [
+    "Identifies a remote Git object at retrieval time.",
+    "Does not retain a full repository checkout or external data dependencies.",
+    "Does not execute target-repository content."
+  ]
+}

@@ -1,0 +1,34 @@
+name: test
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+jobs:
+  test:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.9"
+      - run: python3 -m pip install --disable-pip-version-check "coverage>=7.10,<8"
+      - run: COVERAGE_FILE="$RUNNER_TEMP/.coverage" python3 -m coverage run -m unittest discover -v
+      - run: COVERAGE_FILE="$RUNNER_TEMP/.coverage" python3 -m coverage report --include='repo_curator/*' --fail-under=80
+      - run: python3 -m compileall -q repo_curator tests
+      - name: Review locked upstream metadata
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: >-
+          python3 tools/check_upstreams.py
+          --output "$RUNNER_TEMP/upstream-review.json"
+      - name: Check release
+        run: >-
+          python3 tools/check_release.py
+          --upstream-review "$RUNNER_TEMP/upstream-review.json"
+          --output "$RUNNER_TEMP/release-check.json"

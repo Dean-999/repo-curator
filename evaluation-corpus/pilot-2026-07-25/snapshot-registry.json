@@ -1,0 +1,106 @@
+{
+  "schema_version": "repo-curator.pilot-snapshot-registry.v1",
+  "purpose": "source-registry-only; not an evaluation corpus or admission evidence",
+  "repositories": [
+    {
+      "repository_id": "nf-core-rnaseq",
+      "repository_family": "bioinformatics-workflow",
+      "repository_type": "computational-research",
+      "source_url": "https://github.com/nf-core/rnaseq",
+      "commit_sha": "1f03b53ef799e298f60c813440e961e867017043",
+      "snapshot_descriptor_path": "artifacts/repository-snapshots/nf-core-rnaseq.json",
+      "snapshot_descriptor_sha256": "sha256:1233270cca9d0b64191306b1db476e7e8b1c530ad1d8435c8cb6215bba9f1ecb",
+      "access": "public-mit"
+    },
+    {
+      "repository_id": "nipreps-fmriprep",
+      "repository_family": "neuroimaging-pipeline",
+      "repository_type": "computational-research",
+      "source_url": "https://github.com/nipreps/fmriprep",
+      "commit_sha": "eb167b9ffb4bf2b90bf86457748e921887ef64a1",
+      "snapshot_descriptor_path": "artifacts/repository-snapshots/nipreps-fmriprep.json",
+      "snapshot_descriptor_sha256": "sha256:399c897527cdb8ca3852341cdbb958860a3958d3fbe2f6a69c3fafbbbefd0b54",
+      "access": "public-apache-2.0"
+    },
+    {
+      "repository_id": "climlab",
+      "repository_family": "climate-process-modeling",
+      "repository_type": "computational-research",
+      "source_url": "https://github.com/climlab/climlab",
+      "commit_sha": "fcbde377d131d98b05e2e9d0729d9a22ec60bd18",
+      "snapshot_descriptor_path": "artifacts/repository-snapshots/climlab.json",
+      "snapshot_descriptor_sha256": "sha256:48feb50cb2e2192cdc5fba84c351998038a1689b8838b74953eb040d9f21fe3d",
+      "access": "public-mit"
+    },
+    {
+      "repository_id": "multiphysics-bench",
+      "repository_family": "scientific-ml-benchmark",
+      "repository_type": "computational-research",
+      "source_url": "https://github.com/xie-lab-ml/multiphysics-bench",
+      "commit_sha": "1195b44915712929d605ee5076a831c7124ead93",
+      "snapshot_descriptor_path": "artifacts/repository-snapshots/multiphysics-bench.json",
+      "snapshot_descriptor_sha256": "sha256:97db843876d473133be92e099d8090a3a3cf7ba10e593b4cff20469e78d6f6a6",
+      "access": "public-mit"
+    },
+    {
+      "repository_id": "deepvariant",
+      "repository_family": "bioinformatics-variant-calling",
+      "repository_type": "computational-research",
+      "source_url": "https://github.com/google/deepvariant",
+      "commit_sha": "45f2627504c59785ea2b88d0256a2ec347bce7b4",
+      "snapshot_descriptor_path": "artifacts/repository-snapshots/deepvariant.json",
+      "snapshot_descriptor_sha256": "sha256:745ef514fc36793248f8492b3b729be22debf473f41942de7415d28e06e797d5",
+      "access": "public-bsd-3-clause"
+    },
+    {
+      "repository_id": "scanpy",
+      "repository_family": "single-cell-bioinformatics",
+      "repository_type": "computational-research",
+      "source_url": "https://github.com/scverse/scanpy",
+      "commit_sha": "27bba90ce019b0d85d71211f2c8f9098da4b2806",
+      "snapshot_descriptor_path": "artifacts/repository-snapshots/scanpy.json",
+      "snapshot_descriptor_sha256": "sha256:ec165055923875afa3be366b99153ea370669cbe22f9112b6502aa82df5bdb1e",
+      "access": "public-bsd-3-clause"
+    },
+    {
+      "repository_id": "deepmd-kit",
+      "repository_family": "molecular-dynamics",
+      "repository_type": "computational-research",
+      "source_url": "https://github.com/deepmodeling/deepmd-kit",
+      "commit_sha": "cc908a879ab1510165c5cee1c4a2e6d5ee5f6bd3",
+      "snapshot_descriptor_path": "artifacts/repository-snapshots/deepmd-kit.json",
+      "snapshot_descriptor_sha256": "sha256:ba48a960fccaf91aaa6fa52f3b86bcbd6ee5b2d7834b887fdef2dae96f4b6cd3",
+      "access": "public-lgpl-3.0"
+    },
+    {
+      "repository_id": "psi4",
+      "repository_family": "quantum-chemistry",
+      "repository_type": "computational-research",
+      "source_url": "https://github.com/psi4/psi4",
+      "commit_sha": "a260858888381d2764bcf54ac41ad24620eb1b10",
+      "snapshot_descriptor_path": "artifacts/repository-snapshots/psi4.json",
+      "snapshot_descriptor_sha256": "sha256:5db3487d9a950cbc2cc9bbdac83ecf2c03dd12ac0d737191bb8f88ad9bd01e39",
+      "access": "public-lgpl-3.0"
+    },
+    {
+      "repository_id": "deepxde",
+      "repository_family": "physics-informed-scientific-ml",
+      "repository_type": "computational-research",
+      "source_url": "https://github.com/lululxvi/deepxde",
+      "commit_sha": "0ffcbed84c38146a61650b92a094dd855a14d1f4",
+      "snapshot_descriptor_path": "artifacts/repository-snapshots/deepxde.json",
+      "snapshot_descriptor_sha256": "sha256:623f6b2344517d873fde450583de763d0ac7879eebc2a43640a4ec5f6032c520",
+      "access": "public-lgpl-2.1"
+    },
+    {
+      "repository_id": "sciml-benchmarks",
+      "repository_family": "scientific-ml-benchmarks",
+      "repository_type": "computational-research",
+      "source_url": "https://github.com/SciML/SciMLBenchmarks.jl",
+      "commit_sha": "8cb51bd2810fcf0561c04c60f6a5af99cb52d112",
+      "snapshot_descriptor_path": "artifacts/repository-snapshots/sciml-benchmarks.json",
+      "snapshot_descriptor_sha256": "sha256:e669b93a7391fcec1d380d5bff870f72c6e00693e3f777233d2d0c2e3bf32929",
+      "access": "public-mit"
+    }
+  ]
+}

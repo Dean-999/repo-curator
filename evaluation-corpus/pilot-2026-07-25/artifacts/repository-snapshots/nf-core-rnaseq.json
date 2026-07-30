@@ -1,0 +1,18 @@
+{
+  "schema_version": "repo-curator.repository-snapshot-descriptor.v1",
+  "repository_id": "nf-core-rnaseq",
+  "repository_family": "bioinformatics-workflow",
+  "repository_type": "computational-research",
+  "source_url": "https://github.com/nf-core/rnaseq",
+  "git_commit_sha": "1f03b53ef799e298f60c813440e961e867017043",
+  "git_tree_sha": "22e49074577ef395e935ea80dad9ea209f9a8cfc",
+  "authored_at": "2026-07-24T13:07:31Z",
+  "committed_at": "2026-07-24T13:07:31Z",
+  "retrieved_at": "2026-07-25T07:47:03Z",
+  "acquisition": "github-api-read-only",
+  "limitations": [
+    "Identifies a remote Git object at retrieval time.",
+    "Does not retain a full repository checkout or external data dependencies.",
+    "Does not execute target-repository content."
+  ]
+}

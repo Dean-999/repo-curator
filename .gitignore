@@ -1,0 +1,17 @@
+.DS_Store
+tmp/
+output/
+.repo-curator/
+*.pyc
+__pycache__/
+.coverage
+.pytest_cache/
+node_modules/
+.worktrees/
+.superpowers/
+
+# Large evaluation working sets are reproducible from frozen descriptors.
+evaluation-corpus/**/artifacts/audit-runs/*/
+evaluation-corpus/**/*-pre-review/
+evaluation-corpus/**/*-pre-review.zip
+evaluation-corpus/**/review-packets/*.zip

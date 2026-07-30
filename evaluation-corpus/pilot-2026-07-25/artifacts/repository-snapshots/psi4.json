@@ -1,0 +1,18 @@
+{
+  "schema_version": "repo-curator.repository-snapshot-descriptor.v1",
+  "repository_id": "psi4",
+  "repository_family": "quantum-chemistry",
+  "repository_type": "computational-research",
+  "source_url": "https://github.com/psi4/psi4",
+  "git_commit_sha": "a260858888381d2764bcf54ac41ad24620eb1b10",
+  "git_tree_sha": "8e173237187fdf927930a233c23a23865c378deb",
+  "authored_at": "2026-07-24T21:09:28Z",
+  "committed_at": "2026-07-24T21:09:28Z",
+  "retrieved_at": "2026-07-26T14:36:08Z",
+  "acquisition": "github-api-read-only",
+  "limitations": [
+    "Identifies a remote Git object at retrieval time.",
+    "Does not retain a full repository checkout or external data dependencies.",
+    "Does not execute target-repository content."
+  ]
+}

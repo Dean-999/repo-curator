@@ -1,0 +1,18 @@
+{
+  "schema_version": "repo-curator.repository-snapshot-descriptor.v1",
+  "repository_id": "scanpy",
+  "repository_family": "single-cell-bioinformatics",
+  "repository_type": "computational-research",
+  "source_url": "https://github.com/scverse/scanpy",
+  "git_commit_sha": "27bba90ce019b0d85d71211f2c8f9098da4b2806",
+  "git_tree_sha": "0298d75f8e7baeed4d59ce786bbbd6adb3f50abc",
+  "authored_at": "2026-07-26T07:24:45Z",
+  "committed_at": "2026-07-26T07:24:45Z",
+  "retrieved_at": "2026-07-26T14:36:08Z",
+  "acquisition": "github-api-read-only",
+  "limitations": [
+    "Identifies a remote Git object at retrieval time.",
+    "Does not retain a full repository checkout or external data dependencies.",
+    "Does not execute target-repository content."
+  ]
+}

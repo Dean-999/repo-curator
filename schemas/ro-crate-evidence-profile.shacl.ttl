@@ -1,0 +1,36 @@
+@prefix rc: <https://github.com/Dean-999/repo-curator#> .
+@prefix schema: <http://schema.org/> .
+@prefix sh: <http://www.w3.org/ns/shacl#> .
+
+<https://github.com/Dean-999/repo-curator/tree/main/docs/profiles/evidence-v1#RootShape>
+    a sh:NodeShape ;
+    sh:targetNode <./> ;
+    sh:class schema:Dataset ;
+    sh:property [
+        sh:path rc:executionAuthorized ;
+        sh:hasValue false ;
+        sh:minCount 1 ;
+        sh:maxCount 1
+    ] ;
+    sh:property [
+        sh:path rc:exportSchemaVersion ;
+        sh:hasValue "repo-curator.ro-crate-export.v1" ;
+        sh:minCount 1 ;
+        sh:maxCount 1
+    ] ;
+    sh:property [
+        sh:path schema:conformsTo ;
+        sh:hasValue <https://github.com/Dean-999/repo-curator/tree/main/docs/profiles/evidence-v1> ;
+        sh:minCount 1
+    ] .
+
+<https://github.com/Dean-999/repo-curator/tree/main/docs/profiles/evidence-v1#DescriptorShape>
+    a sh:NodeShape ;
+    sh:targetNode <ro-crate-metadata.json> ;
+    sh:class schema:CreativeWork ;
+    sh:property [
+        sh:path schema:about ;
+        sh:hasValue <./> ;
+        sh:minCount 1 ;
+        sh:maxCount 1
+    ] .

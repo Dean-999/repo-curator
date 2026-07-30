@@ -1,0 +1,18 @@
+{
+  "schema_version": "repo-curator.repository-snapshot-descriptor.v1",
+  "repository_id": "deepxde",
+  "repository_family": "physics-informed-scientific-ml",
+  "repository_type": "computational-research",
+  "source_url": "https://github.com/lululxvi/deepxde",
+  "git_commit_sha": "0ffcbed84c38146a61650b92a094dd855a14d1f4",
+  "git_tree_sha": "9cf36a1672f045fefd44add0e32b2ba019eef6f1",
+  "authored_at": "2026-06-24T14:33:39Z",
+  "committed_at": "2026-06-24T14:33:39Z",
+  "retrieved_at": "2026-07-26T14:36:08Z",
+  "acquisition": "github-api-read-only",
+  "limitations": [
+    "Identifies a remote Git object at retrieval time.",
+    "Does not retain a full repository checkout or external data dependencies.",
+    "Does not execute target-repository content."
+  ]
+}

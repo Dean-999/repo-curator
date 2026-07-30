@@ -1,0 +1,18 @@
+{
+  "schema_version": "repo-curator.repository-snapshot-descriptor.v1",
+  "repository_id": "sciml-benchmarks",
+  "repository_family": "scientific-ml-benchmarks",
+  "repository_type": "computational-research",
+  "source_url": "https://github.com/SciML/SciMLBenchmarks.jl",
+  "git_commit_sha": "8cb51bd2810fcf0561c04c60f6a5af99cb52d112",
+  "git_tree_sha": "68221b7936a937ddc8355892f74a3f4285e38021",
+  "authored_at": "2026-07-24T06:30:22Z",
+  "committed_at": "2026-07-24T06:30:22Z",
+  "retrieved_at": "2026-07-26T14:36:08Z",
+  "acquisition": "github-api-read-only",
+  "limitations": [
+    "Identifies a remote Git object at retrieval time.",
+    "Does not retain a full repository checkout or external data dependencies.",
+    "Does not execute target-repository content."
+  ]
+}
