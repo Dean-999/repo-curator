@@ -1,3 +1,11 @@
+<p align="center">
+  <img
+    src="docs/assets/repo-curator-banner.png"
+    alt="Repo Curator — evidence-backed curation for messy research repositories"
+    width="100%"
+  >
+</p>
+
 # repo-curator
 
 `repo-curator` provides retrospective evidence reconstruction and safe curation for computational research repositories made chaotic by repeated human and AI-assisted changes. It reconstructs project intent and scientific mainlines, identifies related or competing artifacts, and prepares conservative, reviewable convergence proposals.
