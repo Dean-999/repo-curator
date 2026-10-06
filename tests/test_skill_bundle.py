@@ -8,6 +8,7 @@ from pathlib import Path
 from unittest import mock
 
 from repo_curator.bundle import _validate_source_governance, build_skill_bundle
+from repo_curator import __version__
 
 
 REPOSITORY_ROOT = Path(__file__).resolve().parents[1]
@@ -56,7 +57,7 @@ class SkillBundleTest(unittest.TestCase):
                 manifest["schema_version"], "repo-curator.skill-bundle.v4"
             )
             self.assertEqual(manifest["skill_name"], "repo-curator")
-            self.assertEqual(manifest["repo_curator_version"], "0.2.1")
+            self.assertEqual(manifest["repo_curator_version"], __version__)
             source_git = manifest["source_git"]
             expected_head = subprocess.run(
                 ["git", "rev-parse", "--verify", "HEAD^{commit}"],
