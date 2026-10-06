@@ -1,6 +1,6 @@
 <p align="center">
   <img
-    src="docs/assets/repo-curator-banner.png"
+    src="https://raw.githubusercontent.com/Dean-999/repo-curator/main/docs/assets/repo-curator-banner.png"
     alt="Repo Curator — evidence-backed curation for messy research repositories"
     width="100%"
   >
