@@ -108,14 +108,16 @@ output is created once relative to an opened canonical parent, retries short
 writes, fsyncs both file and parent, and rejects parent identity drift.
 
 Representative public-repository validation, exact commits, and retained
-limitations are recorded in [docs/release-validation.md](docs/release-validation.md).
+limitations are recorded in [docs/RELEASE.md](docs/RELEASE.md).
 
 ## Internal audit kernel
 
 Contributors can exercise the deterministic kernel directly from the repository
-checkout:
+checkout. The `-m repo_curator` form must run from the checkout (or an
+environment where the package is installed):
 
 ```console
+cd /absolute/path/to/repo-curator
 python3 -m repo_curator audit \
   --root /path/to/research-repository \
   --run-id audit-20260719 \
@@ -126,16 +128,47 @@ python3 -m repo_curator audit \
   --max-directory-entries 50000 \
   --max-total-hash-bytes 1073741824 \
   --compare-to-run audit-20260718 \
-  --adapter-export-manifest /absolute/path/to/reprozip-export.json
+  --adapter-export-manifest /absolute/path/to/reprozip-export.json \
+  --advanced-review
+```
+
+From any working directory, use the bundled launcher instead:
+
+```console
+python3 /absolute/path/to/repo-curator/.agents/skills/repo-curator/scripts/run_audit.py audit \
+  --root /absolute/path/to/research-repository \
+  --run-id audit-20260719 \
+  --created-at 2026-07-19T00:00:00Z \
+  --advanced-review
 ```
 
 The command writes versioned `run.json`, `inventory.jsonl`, `git-observations.jsonl`, `structural-observations.jsonl`, `profiles.jsonl`, `archive-observations.jsonl`, `adapter-observations.jsonl`, `evidence.jsonl`, and `relationships.jsonl` files below `.repo-curator/runs/<run-id>/` in the selected repository. Fixed inputs and run metadata produce deterministic inventory bytes. The five applied scan budgets are recorded in `run.json` and the curation brief. Directory-width overflow scans none of that directory's children; artifact and depth limits stop deterministic traversal; cumulative hash exhaustion retains metadata while omitting content identity. Every case finalizes with an explicit limitation. Each record keeps independent per-run artifact, exact-content, filesystem-location, and unresolved-lineage identities: equal bytes (including hard links) do not establish artifact or lineage sameness. Directory content IDs are location-free Merkle identities, while location IDs include the root realpath, object type, and raw repository-relative path bytes. It inventories regular files, directories, symbolic links, and special filesystem objects using descriptor-relative operations. Links are recorded by their raw target text and are never followed; external, missing, or symlink-mediated targets receive structured boundary warnings. FIFOs, sockets, devices, and other special filesystem objects are retained without being opened. Root Git control data and nested repository roots are recorded as protected boundaries and are not descended into. Unicode-normalized case collisions are retained and flagged on every affected record.
+
+If the full evidence ledger is more detail than a reviewer needs, add
+`--report-output /tmp/audit-report.html` to write a short self-contained
+temporary webpage. It highlights the conclusion, files needing human review,
+known facts, uncertainties, the next safe step, and a secondary table of each
+root-level folder's recursively observed size, file count, and object count.
+Use a non-`.html` path for Markdown, or `--report-output -` to print Markdown
+to the terminal. The page never authorizes cleanup or replaces the hash-bound
+evidence under `.repo-curator/`.
+
+如果审计已经完成，也可以直接从已保存的 run 重新生成报告，不必重复扫描：
+
+```console
+python3 /absolute/path/to/repo-curator/.agents/skills/repo-curator/scripts/run_audit.py report \
+  --run-directory /absolute/path/to/research-repository/.repo-curator/runs/audit-20260719 \
+  --output /tmp/audit-report.html
+```
+
+`report` 会重新校验 brief 和 inventory 的 SHA-256；`.html` 生成离线网页，
+其他后缀生成 Markdown，`--output -` 将 Markdown 输出到终端。
 
 To create a non-executable RO-Crate view from a completed audit, use a new
 absolute output path outside the target repository:
 
 ```console
-python3 -m repo_curator export-ro-crate \
+python3 /absolute/path/to/repo-curator/.agents/skills/repo-curator/scripts/run_audit.py export-ro-crate \
   --run-directory /absolute/path/to/research-repository/.repo-curator/runs/audit-20260719 \
   --output /absolute/path/to/export/ro-crate-metadata.json
 ```
@@ -150,7 +183,7 @@ Workflow Run, declare a successful reproduction, or change the target.
 To validate that export against repo-curator's bounded local evidence profile:
 
 ```console
-python3 -m repo_curator validate-ro-crate \
+python3 /absolute/path/to/repo-curator/.agents/skills/repo-curator/scripts/run_audit.py validate-ro-crate \
   --input /absolute/path/to/export/ro-crate-metadata.json \
   --output /absolute/path/to/new/validation-report.json
 ```
@@ -268,6 +301,14 @@ remain unchanged.
 
 The declaration adapter recognizes DVC, DataLad, MLflow, Sacred, Data Package, RO-Crate, BagIt, Snakemake, Nextflow, Renku, noWorkflow, showyourwork, Citation File Format, CodeMeta, and signac markers without importing or launching their tools. It emits typed, coverage-limited observations only. `CITATION.cff` is presence-only and its YAML is never opened by either the declaration adapter or generic profiler. A bounded `codemeta.json` syntax check retains only allowlisted field names and selected declared cardinalities, never values or resolved JSON-LD. The BSD-3-Clause-attributed signac observer counts project, cache, statepoint, and document markers from inventory only, caps persisted markers at 256, and never reads signac metadata. A BSD-3-Clause-attributed repo2docker port additionally recognizes Conda, pip, Pipenv, R, Julia, Nix, Docker, and Binder environment markers from inventory paths. It preserves root markers shadowed by `binder/` or `.binder/` and reports conflicting Binder directories without choosing one; it never parses a dependency file or executes a build instruction. Recognized JSON declarations are read through descriptor-relative no-follow opens and are bounded to 1 MiB for UTF-8 JSON validation. The MIT-attributed Frictionless Data Package port observes every root or nested `datapackage.json`, capped at 128 resources and 16 paths per resource. It retains only safe structural tokens and normalized repository-relative local-path presence; remote URLs, inline values, schemas, dialects, descriptions, and arbitrary metadata are not persisted, and no resource is opened or fetched. Generic profiles for admitted research metadata descriptors are content-free so descriptor values cannot bypass this boundary. The RO-Crate adapter additionally performs an Apache-2.0-attributed, local-only bounded port of entity indexing and metadata-descriptor-to-Dataset-root checking: it records at most 256 entities and 512 `@id` references, never resolves a remote context or payload, and retains malformed, duplicate, external, and unresolved references as limitations. Workflow Run RO-Crate remains a declaration-only subtype, and `dvc.lock` receives only a bounded lexical stage-key count. Oversized, malformed, unavailable, or changed declarations remain observable with explicit limitations.
 
+Passing `--advanced-review` enables opt-in semantic observations for local DVC,
+MLflow, DataLad, and BagIt material, bounded near-duplicate candidates,
+transparent information-value ordering for an open decision question, and an
+evidence-coverage matrix. It writes `near-duplicate-candidates.jsonl` and
+`evidence-coverage.jsonl` only in that mode. These records are review-only,
+hash-bound in `run.json`, and never grant execution, merge, archive, or
+deletion authority.
+
 An explicit repeatable `--adapter-export-manifest` may additionally import one
 ReproZip metadata JSON export. The absolute manifest is strict
 `repo-curator.supplied-adapter-export-manifest.v1` JSON: it declares `REPROZIP`,
@@ -340,7 +381,7 @@ For a focused cross-platform parent acceptance check, run:
 python3 -m unittest -v tests/test_parent_issue_1_acceptance.py
 ```
 
-The audit outputs are `inventory.jsonl`, `git-observations.jsonl`, `structural-observations.jsonl`, `profiles.jsonl`, `archive-observations.jsonl`, `adapter-observations.jsonl`, `evidence.jsonl`, `relationships.jsonl`, `project-intent.json`, `retention-policy.json`, `mainline-map.jsonl`, `intent-conflicts.jsonl`, `decision-questions.jsonl`, `user-decisions.jsonl`, `experiment-attempts.jsonl`, `experiment-bundles.jsonl`, `canonical-result-candidates.jsonl`, `reproducibility-gaps.jsonl`, `change-episodes.jsonl`, `capability-families.jsonl`, `implementation-roles.jsonl`, `document-comparisons.jsonl`, `canonical-entry-points.jsonl`, `classifications.jsonl`, `recommendations.jsonl`, and `run.json` below `.repo-curator/runs/<run-id>/`. The corresponding non-executable shadow plan lives below `.repo-curator/plans/<run-id>/`. They are forensic inventory and
+The audit outputs are `inventory.jsonl`, `git-observations.jsonl`, `structural-observations.jsonl`, `profiles.jsonl`, `archive-observations.jsonl`, `adapter-observations.jsonl`, `evidence.jsonl`, `relationships.jsonl`, `project-intent.json`, `retention-policy.json`, `mainline-map.jsonl`, `intent-conflicts.jsonl`, `decision-questions.jsonl`, `user-decisions.jsonl`, `experiment-attempts.jsonl`, `experiment-bundles.jsonl`, `canonical-result-candidates.jsonl`, `reproducibility-gaps.jsonl`, `change-episodes.jsonl`, `capability-families.jsonl`, `implementation-roles.jsonl`, `document-comparisons.jsonl`, `canonical-entry-points.jsonl`, `classifications.jsonl`, `recommendations.jsonl`, and `run.json` below `.repo-curator/runs/<run-id>/`. Advanced mode additionally writes `near-duplicate-candidates.jsonl` and `evidence-coverage.jsonl`. The corresponding non-executable shadow plan lives below `.repo-curator/plans/<run-id>/`. They are forensic inventory and
 declaration-presence evidence only: audit does not clean up a repository,
 reproduce an experiment, prove semantic lineage, or execute external tools,
 package managers, hooks, or target commands.
@@ -358,7 +399,7 @@ main value proposition or a prerequisite for ordinary shadow-mode use.
 and produce conservative reviewable plans while remaining `SHADOW_ONLY`.
 Semantic claims and mutation operation classes are promoted beyond
 `SHADOW_ONLY` only if an independently reviewed v2 corpus satisfies the
-protocol in [docs/evaluation-protocol.md](docs/evaluation-protocol.md). The
+protocol in [docs/EVALUATION.md](docs/EVALUATION.md). The
 local commands below only read explicit JSON corpus artifacts; they never open,
 scan, or execute an evaluated repository.
 
@@ -416,18 +457,17 @@ not authenticate reviewer identity or confer mutation authority.
 
 Release bundles include the machine-readable
 [`third_party/sources.lock.yaml`](third_party/sources.lock.yaml) and
-[`THIRD_PARTY_NOTICES.md`](THIRD_PARTY_NOTICES.md), plus the compatible-reader
+[`THIRD_PARTY_NOTICES.md`](docs/THIRD_PARTY_NOTICES.md), plus the compatible-reader
 policy in [`schemas/registry.json`](schemas/registry.json) and
 [`schemas/README.md`](schemas/README.md). The bundle manifest binds all four
 files by SHA-256 and construction fails if their source entries, licenses,
 fixtures, notice sections, or schema coverage are incomplete.
 
-- [Product requirements](docs/product-requirements.md)
-- [Product and technical design](docs/superpowers/specs/2026-07-16-repo-curator-design.md)
-- [Evaluation corpus governance](docs/evaluation-corpus-governance.md)
-- [Binding safety amendments](final-binding-amendments.md)
-- [Reference design sources](docs/reference-design-sources.md)
-- [Competitive and standards landscape](research/repo-curator-landscape-analysis.md)
+- [Project contract](docs/PROJECT.md)
+- [Evaluation contract](docs/EVALUATION.md)
+- [Release contract](docs/RELEASE.md)
+- [Binding safety amendments](docs/final-binding-amendments.md)
+- [Research and adoption notes](docs/RESEARCH.md)
 
 ## Safety boundaries
 

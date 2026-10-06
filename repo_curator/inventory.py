@@ -10,6 +10,11 @@ from pathlib import Path
 from typing import Any, Dict, Iterable, List, Optional
 
 from repo_curator import __version__
+from repo_curator.advanced import (
+    build_evidence_coverage,
+    find_near_duplicate_candidates,
+    observe_semantic_adapters,
+)
 from repo_curator.budgets import AuditBudgets
 from repo_curator.brief import (
     bind_curation_brief,
@@ -54,6 +59,7 @@ def audit_repository(
     budgets: AuditBudgets = AuditBudgets(),
     adapter_export_manifests: Iterable[Path] = (),
     compare_to_run_id: Optional[str] = None,
+    advanced_review: bool = False,
 ) -> Path:
     budgets.validate()
     resolved_root = root.resolve(strict=True)
@@ -99,8 +105,19 @@ def audit_repository(
                 start_sequence=len(observations),
             )
         )
+        semantic_observations = (
+            observe_semantic_adapters(root_fd, inventory_records, run_id, created_at)
+            if advanced_review
+            else []
+        )
+        observations.extend(semantic_observations)
         observations_bytes = _json_lines(observations)
         observations_hash = hashlib.sha256(observations_bytes).hexdigest()
+        near_duplicate_candidates = (
+            find_near_duplicate_candidates(root_fd, inventory_records, run_id, created_at)
+            if advanced_review
+            else []
+        )
         intent = discover_intent(root_fd, inventory_records, run_id, created_at)
         evidence, relationships = build_evidence_graph(
             inventory_records,
@@ -131,7 +148,12 @@ def audit_repository(
         mainline_hash = hashlib.sha256(mainline_bytes).hexdigest()
         intent_conflicts_bytes = _json_lines(intent.conflicts)
         intent_conflicts_hash = hashlib.sha256(intent_conflicts_bytes).hexdigest()
-        decision_questions = build_decision_questions(intent.conflicts, run_id, created_at)
+        decision_questions = build_decision_questions(
+            intent.conflicts,
+            run_id,
+            created_at,
+            advanced=advanced_review,
+        )
         decision_questions_bytes = _json_lines(decision_questions)
         decision_questions_hash = hashlib.sha256(decision_questions_bytes).hexdigest()
         user_decisions_bytes = _json_lines([])
@@ -221,10 +243,25 @@ def audit_repository(
             created_at,
             repository_state_hash,
         )
+        evidence_coverage = (
+            build_evidence_coverage(
+                classifications,
+                recommendations,
+                near_duplicate_candidates,
+                run_id,
+                created_at,
+            )
+            if advanced_review
+            else []
+        )
         classifications_bytes = _json_lines(classifications)
         recommendations_bytes = _json_lines(recommendations)
         classifications_hash = hashlib.sha256(classifications_bytes).hexdigest()
         recommendations_hash = hashlib.sha256(recommendations_bytes).hexdigest()
+        near_duplicate_bytes = _json_lines(near_duplicate_candidates)
+        near_duplicate_hash = hashlib.sha256(near_duplicate_bytes).hexdigest()
+        evidence_coverage_bytes = _json_lines(evidence_coverage)
+        evidence_coverage_hash = hashlib.sha256(evidence_coverage_bytes).hexdigest()
         intent_warnings = sorted(
             set(intent.warnings)
             | (
@@ -426,6 +463,20 @@ def audit_repository(
             "tool_versions": {"repo-curator": __version__},
             "warnings": warnings,
         }
+        if advanced_review:
+            run_record["output_file_hashes"].update(
+                {
+                    "near-duplicate-candidates.jsonl": near_duplicate_hash,
+                    "evidence-coverage.jsonl": evidence_coverage_hash,
+                }
+            )
+            run_record["advanced_review"] = {
+                "enabled": True,
+                "execution_authorized": False,
+                "semantic_observation_count": len(semantic_observations),
+                "near_duplicate_candidate_count": len(near_duplicate_candidates),
+                "evidence_coverage_record_count": len(evidence_coverage),
+            }
         if prior_run_comparison_hash is not None:
             run_record["output_file_hashes"]["prior-run-comparison.json"] = prior_run_comparison_hash
 
@@ -481,6 +532,17 @@ def audit_repository(
                 )
             _write_bytes(run_directory_fd, "classifications.jsonl", classifications_bytes)
             _write_bytes(run_directory_fd, "recommendations.jsonl", recommendations_bytes)
+            if advanced_review:
+                _write_bytes(
+                    run_directory_fd,
+                    "near-duplicate-candidates.jsonl",
+                    near_duplicate_bytes,
+                )
+                _write_bytes(
+                    run_directory_fd,
+                    "evidence-coverage.jsonl",
+                    evidence_coverage_bytes,
+                )
             _write_bytes(run_directory_fd, "run.json", _json_bytes(run_record))
             os.fsync(run_directory_fd)
             shadow_plan_identity = _publish_shadow_plan(

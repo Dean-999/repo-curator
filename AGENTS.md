@@ -20,7 +20,7 @@ hooks, package managers, containers, notebooks, or remote project operations.
 
 Every copied, adapted, or behaviorally derived component must be compatible
 with this repository's distribution, attributed, and recorded in
-`third_party/sources.lock.yaml` and `THIRD_PARTY_NOTICES.md` with a fixed
+`third_party/sources.lock.yaml` and `docs/THIRD_PARTY_NOTICES.md` with a fixed
 upstream commit, source path or behavior, license, integration mode,
 modification summary, and regression fixture. Do not copy code whose license
 or provenance cannot be established. Upstream changes enter shadow evaluation
@@ -38,4 +38,4 @@ The repository uses the five canonical triage roles with their standard label na
 
 ### Domain docs
 
-This is a single-context repository. Read the root `CONTEXT.md` when present and relevant ADRs under `docs/adr/`. See `docs/agents/domain.md`.
+This is a single-context repository. Read `docs/CONTEXT.md` when present and relevant ADRs under `docs/adr/`. See `docs/agents/domain.md`.

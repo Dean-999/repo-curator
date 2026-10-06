@@ -149,7 +149,7 @@ def _observation_candidates(
             if key in observation
         }
         yield {
-            "assertion_origin": assertion_origin,
+            "assertion_origin": observation.get("assertion_origin", assertion_origin),
             "extractor": extractor,
             "limitations": observation.get("limitations", []),
             "scope": observation.get("coverage", "OBSERVATION_ONLY"),
