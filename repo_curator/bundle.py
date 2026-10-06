@@ -19,7 +19,8 @@ SCHEMA_REGISTRY_SCHEMA_VERSION = "repo-curator.schema-registry.v1"
 _SKILL_PATH = Path(".agents") / "skills" / "repo-curator"
 _SOURCE_LOCK_PATH = Path("third_party") / "sources.lock.yaml"
 _LICENSES_PATH = Path("third_party") / "licenses"
-_NOTICES_PATH = Path("THIRD_PARTY_NOTICES.md")
+_NOTICES_SOURCE_PATH = Path("docs") / "THIRD_PARTY_NOTICES.md"
+_NOTICES_BUNDLE_PATH = Path("THIRD_PARTY_NOTICES.md")
 _SCHEMA_REGISTRY_PATH = Path("schemas") / "registry.json"
 _SCHEMA_GUIDANCE_PATH = Path("schemas") / "README.md"
 _RO_CRATE_SHAPE_PATH = Path("schemas") / "ro-crate-evidence-profile.shacl.ttl"
@@ -37,6 +38,7 @@ _LICENSE_TEXT_MARKERS = {
 _READ_ONLY_RUNTIME_MODULES = frozenset({
     "__init__.py",
     "__main__.py",
+    "advanced.py",
     "archives.py",
     "brief.py",
     "budgets.py",
@@ -57,6 +59,7 @@ _READ_ONLY_RUNTIME_MODULES = frozenset({
     "notebook_envelope.py",
     "prior_runs.py",
     "profiles.py",
+    "report_html.py",
     "relationships.py",
     "repository_hygiene.py",
     "research_metadata.py",
@@ -72,6 +75,10 @@ _READ_ONLY_RUNTIME_MODULES = frozenset({
 
 _REQUIRED_SCHEMA_IDS = frozenset({
     "repo-curator.adapter-observation.v1", "repo-curator.apply-journal.v2",
+    "repo-curator.semantic-adapter-observation.v1",
+    "repo-curator.dvc-observation.v1", "repo-curator.mlflow-observation.v1",
+    "repo-curator.datalad-observation.v1", "repo-curator.bagit-observation.v1",
+    "repo-curator.near-duplicate-candidate.v1", "repo-curator.evidence-coverage.v1",
     "repo-curator.approval.v1", "repo-curator.archive-observation.v1",
     "repo-curator.archive-plan.v1", "repo-curator.canonical-entry-point.v1",
     "repo-curator.canonical-result-candidate.v1",
@@ -82,6 +89,7 @@ _REQUIRED_SCHEMA_IDS = frozenset({
     "repo-curator.curation-brief.v1", "repo-curator.curation-brief.v2",
     "repo-curator.curation-brief.v3",
     "repo-curator.decision-question.v1",
+    "repo-curator.decision-question.v2",
     "repo-curator.document-comparison.v1", "repo-curator.evaluation-corpus-manifest.v1",
     "repo-curator.evaluation-report.v1", "repo-curator.evidence.v1",
     "repo-curator.experiment-attempt.v1", "repo-curator.experiment-attempt.v2",
@@ -120,13 +128,14 @@ def build_skill_bundle(source_root: Path, output: Path) -> Path:
     source_root = source_root.resolve(strict=True)
     skill_root = source_root / _SKILL_PATH
     package_root = source_root / "repo_curator"
+    notices_source, _ = _resolve_notices_source(source_root)
     required_sources = (
         skill_root / "SKILL.md",
         skill_root / "agents" / "openai.yaml",
         skill_root / "scripts" / "run_audit.py",
         package_root / "cli.py",
         source_root / _SOURCE_LOCK_PATH,
-        source_root / _NOTICES_PATH,
+        notices_source,
         source_root / _SCHEMA_REGISTRY_PATH,
         source_root / _SCHEMA_GUIDANCE_PATH,
         source_root / _RO_CRATE_SHAPE_PATH,
@@ -166,7 +175,7 @@ def build_skill_bundle(source_root: Path, output: Path) -> Path:
             module_name = source.name
             _copy_file(source, output / "scripts" / "repo_curator" / module_name)
         _copy_file(source_root / _SOURCE_LOCK_PATH, output / _SOURCE_LOCK_PATH)
-        _copy_file(source_root / _NOTICES_PATH, output / _NOTICES_PATH)
+        _copy_file(notices_source, output / _NOTICES_BUNDLE_PATH)
         for source in license_sources:
             _copy_file(source, output / _LICENSES_PATH / source.name)
         _copy_file(source_root / _SCHEMA_REGISTRY_PATH, output / _SCHEMA_REGISTRY_PATH)
@@ -177,7 +186,7 @@ def build_skill_bundle(source_root: Path, output: Path) -> Path:
             "governance": {
                 "source_lock_path": _SOURCE_LOCK_PATH.as_posix(),
                 "source_lock_sha256": hashlib.sha256(source_lock).hexdigest(),
-                "third_party_notices_path": _NOTICES_PATH.as_posix(),
+                "third_party_notices_path": _NOTICES_BUNDLE_PATH.as_posix(),
                 "third_party_notices_sha256": hashlib.sha256(notices).hexdigest(),
                 "schema_registry_path": _SCHEMA_REGISTRY_PATH.as_posix(),
                 "schema_registry_sha256": hashlib.sha256(schema_registry).hexdigest(),
@@ -346,7 +355,8 @@ def _git_output(source_root: Path, *arguments: str) -> bytes:
 
 def _validate_source_governance(source_root: Path) -> tuple[bytes, bytes]:
     source_lock = _read_source_bytes(source_root / _SOURCE_LOCK_PATH)
-    notices = _read_source_bytes(source_root / _NOTICES_PATH)
+    notices_source, _ = _resolve_notices_source(source_root)
+    notices = _read_source_bytes(notices_source)
     try:
         lock = json.loads(
             source_lock.decode("utf-8"), object_pairs_hook=_unique_json_object
@@ -438,6 +448,21 @@ def _validate_source_governance(source_root: Path) -> tuple[bytes, bytes]:
         if f"## {identifier}\n" not in notices_text:
             raise ValueError("third-party notice is missing a source-lock entry")
     return source_lock, notices
+
+
+def _resolve_notices_source(source_root: Path) -> tuple[Path, Path]:
+    """Resolve the source notice document while keeping bundle output stable.
+
+    The canonical source location is under docs/. A root-level fallback keeps
+    temporary fixtures and older checkouts readable during the path migration.
+    """
+    canonical = source_root / _NOTICES_SOURCE_PATH
+    if canonical.is_file():
+        return canonical, _NOTICES_SOURCE_PATH
+    legacy = source_root / _NOTICES_BUNDLE_PATH
+    if legacy.is_file():
+        return legacy, _NOTICES_BUNDLE_PATH
+    return canonical, _NOTICES_SOURCE_PATH
 
 
 def _validate_schema_registry(source_root: Path) -> bytes:

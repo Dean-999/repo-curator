@@ -341,6 +341,123 @@ def render_curation_brief_markdown(brief: Mapping[str, Any]) -> str:
     return "\n".join(lines)
 
 
+def render_temporary_audit_report(brief: Mapping[str, Any]) -> str:
+    """Render a short human-facing summary without exposing the evidence ledger."""
+    scope = brief["audit_scope"]
+    observed = brief["observed_evidence"]
+    risks = brief["preservation_risks"]
+    intent = brief["project_intent"]
+    questions = brief["decision_questions"]
+    attention = brief["review_attention_items"]
+    warnings = risks["warnings"]
+    if questions or attention:
+        status = "需要人工复核"
+    elif warnings:
+        status = "已完成，但存在范围限制"
+    else:
+        status = "未发现需要立即处理的项目"
+
+    lines = [
+        "# 临时审计报告",
+        "",
+        "本报告是一次面向人工阅读的摘要，不会修改仓库，也不授权删除、移动或合并文件。",
+        "",
+        "## 结论",
+        "",
+        f"- 审计状态：**{status}**",
+        f"- 审计对象：`{scope['repository_root_realpath']}`",
+        f"- 发现对象：`{scope['artifact_count']}` 个",
+        f"- 完全相同的文件组：`{observed['exact_byte_duplicate_group_count']}` 组",
+        f"- 研究工具或流程声明：`{observed['declaration_observation_count']}` 条",
+        f"- 未解决对象：`{risks['unresolved_artifact_count']}` 个",
+        "",
+        "## 需要人工查看",
+        "",
+    ]
+    if attention:
+        for item in attention[:8]:
+            paths = ", ".join(f"`{path}`" for path in item["repository_relative_paths"])
+            label = _temporary_recommendation_label(item["recommendation_type"])
+            reason = _temporary_attention_reason(item["recommendation_type"], item["limitations"])
+            lines.append(f"- **{label}**：{paths}。{reason}")
+    else:
+        lines.append("- 没有发现需要立即人工处理的项目。")
+
+    lines.extend(["", "## 目前能确认的事实", ""])
+    lines.extend(
+        [
+            f"- 项目意图状态：`{_temporary_intent_label(intent['status'])}`。",
+            f"- 实验链完整性：完整 `{brief['declared_experiment_chains']['complete_bundle_count']}` 个，"
+            f"不完整 `{brief['declared_experiment_chains']['incomplete_bundle_count']}` 个。",
+            f"- 可复现性证据缺口：`{risks['reproducibility_gap_count']}` 个。",
+            "- 审计只观察文件和声明，没有执行代码、Notebook、工作流或实验。",
+        ]
+    )
+
+    lines.extend(["", "## 仍然不确定的地方", ""])
+    if warnings:
+        for warning in warnings[:8]:
+            lines.append(f"- {_temporary_limitation_label(warning)}")
+        if len(warnings) > 8:
+            lines.append(f"- 另有 `{len(warnings) - 8}` 项技术限制记录在完整审计结果中。")
+    else:
+        lines.append("- 没有额外的范围限制。")
+
+    lines.extend(["", "## 建议下一步", ""])
+    if questions:
+        lines.append("- 先回答报告中的证据问题，再决定是否需要整理相关文件。")
+    elif attention:
+        first_path = attention[0]["repository_relative_paths"][0]
+        lines.append(f"- 先人工查看 `{first_path}`，确认它是否仍有独立用途。")
+    else:
+        lines.append("- 暂时保留仓库内容，并保存这份审计报告作为复核记录。")
+    lines.append("- 任何整理动作都需要另行确认；本次审计不会自动执行。")
+    lines.extend(["", f"审计运行 ID：`{brief['run_id']}`", ""])
+    return "\n".join(lines)
+
+
+def _temporary_recommendation_label(recommendation_type: str) -> str:
+    return {
+        "MANUAL_REVIEW": "人工复核",
+        "REVIEW_EXACT_DUPLICATE": "检查重复文件",
+        "ARCHIVE": "检查归档候选",
+        "MERGE": "检查合并候选",
+    }.get(recommendation_type, recommendation_type)
+
+
+def _temporary_attention_reason(recommendation_type: str, limitations: Sequence[str]) -> str:
+    if recommendation_type == "REVIEW_EXACT_DUPLICATE":
+        return "内容相同，但相同内容不能证明用途相同，因此不会自动删除。"
+    if recommendation_type == "MANUAL_REVIEW":
+        if "NON_REGULAR_ARTIFACT_PRESERVED" in limitations:
+            return "这是链接或其他非普通文件对象，需要确认目标和用途。"
+        return "证据不足以安全决定保留、移动或删除。"
+    return "需要人工确认用途和保留策略。"
+
+
+def _temporary_intent_label(status: str) -> str:
+    return {
+        "UNRESOLVED": "尚未确认",
+        "SUPPORTED": "已有证据支持",
+        "PARTIAL": "部分确认",
+    }.get(status, status)
+
+
+def _temporary_limitation_label(code: str) -> str:
+    labels = {
+        "GIT_NOT_REPOSITORY": "目标不是 Git 仓库，无法提供提交历史证据。",
+        "INTENT_UNRESOLVED": "项目意图或主线证据不足。",
+        "SYMLINK_TARGET_MISSING": "存在目标缺失的符号链接。",
+        "DVC_COMMANDS_NOT_EXECUTED": "DVC 命令没有执行，只观察了声明。",
+        "DVC_YAML_LEXICAL_ONLY": "DVC 文件只做了有限词法观察。",
+        "MLFLOW_PROJECT_NOT_EXECUTED": "MLflow 项目没有执行。",
+        "MLFLOW_METADATA_KEYS_ONLY": "MLflow 只保留了有限 metadata 信息。",
+        "PYTHON_SYNTAX_NOT_RUNTIME_BEHAVIOR": "Python 文件只做结构观察，不代表运行行为。",
+        "DECLARATION_PARTIAL": "部分声明无法完整验证。",
+    }
+    return labels.get(code, f"存在范围限制：`{code}`。")
+
+
 def _canonical_result_review(
     canonical_candidates: Sequence[Mapping[str, Any]],
 ) -> Dict[str, Any]:

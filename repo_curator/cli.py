@@ -1,12 +1,16 @@
 import argparse
+import hashlib
 import importlib.util
+import json
 import sys
 from pathlib import Path
 from typing import Optional, Sequence
 
+from repo_curator.brief import render_temporary_audit_report
 from repo_curator.budgets import AuditBudgets
 from repo_curator.inventory import audit_repository
 from repo_curator.interchange import export_ro_crate
+from repo_curator.report_html import render_temporary_audit_html
 
 
 _DEFAULT_WAVE3_REPOSITORY_IDS = (
@@ -42,6 +46,28 @@ def build_parser() -> argparse.ArgumentParser:
         default=[],
         type=Path,
         help="absolute manifest-bound supplied adapter export (repeatable)",
+    )
+    audit_parser.add_argument(
+        "--advanced-review",
+        action="store_true",
+        help="enable bounded semantic adapters, near-duplicate candidates, and evidence coverage",
+    )
+    audit_parser.add_argument(
+        "--report-output",
+        type=Path,
+        help="write a concise human-facing temporary report; use - for stdout",
+    )
+
+    report_parser = subparsers.add_parser(
+        "report", help="render a temporary report from a completed audit run"
+    )
+    report_parser.add_argument(
+        "--run-directory", required=True, type=Path,
+        help="completed .repo-curator/runs/<run-id> directory",
+    )
+    report_parser.add_argument(
+        "--output", required=True, type=Path,
+        help="output .html for an offline page, another suffix for Markdown, or - for stdout",
     )
 
     export_parser = subparsers.add_parser(
@@ -160,7 +186,7 @@ def main(arguments: Optional[Sequence[str]] = None) -> int:
     parsed = build_parser().parse_args(arguments)
     if parsed.workflow == "audit":
         try:
-            audit_repository(
+            run_directory = audit_repository(
                 root=parsed.root,
                 run_id=parsed.run_id,
                 created_at=parsed.created_at,
@@ -173,11 +199,33 @@ def main(arguments: Optional[Sequence[str]] = None) -> int:
                 ),
                 adapter_export_manifests=tuple(parsed.adapter_export_manifest),
                 compare_to_run_id=parsed.compare_to_run,
+                advanced_review=parsed.advanced_review,
             )
+            if parsed.report_output is not None:
+                report = _temporary_report_for_run(run_directory, parsed.report_output)
+                _write_temporary_report(parsed.report_output, report)
+                if parsed.report_output == Path("-"):
+                    sys.stdout.write(report)
+                else:
+                    print(f"repo-curator: temporary report written to {parsed.report_output}")
         except (OSError, ValueError) as error:
             print(f"repo-curator: audit failed: {error}", file=sys.stderr)
             return 2
         return 0
+
+    if parsed.workflow == "report":
+        try:
+            report = _temporary_report_for_run(parsed.run_directory, parsed.output)
+            _write_temporary_report(parsed.output, report)
+            if parsed.output == Path("-"):
+                sys.stdout.write(report)
+            else:
+                print(f"repo-curator: temporary report written to {parsed.output}")
+        except (OSError, ValueError, json.JSONDecodeError) as error:
+            print(f"repo-curator: report failed: {error}", file=sys.stderr)
+            return 2
+        return 0
+
     if parsed.workflow == "corpus-manifest":
         from repo_curator.corpus import (
             CorpusError, build_manifest, read_record_array, read_reviewer_registry,
@@ -323,3 +371,52 @@ def main(arguments: Optional[Sequence[str]] = None) -> int:
             return 2
         return 0
     raise AssertionError(f"unsupported workflow: {parsed.workflow}")
+
+
+def _temporary_report_for_run(run_directory: Path, output: Path) -> str:
+    plan_directory = run_directory.parent.parent / "plans" / run_directory.name
+    plan_path = plan_directory / "plan.json"
+    brief_path = plan_directory / "curation-brief.json"
+    plan = json.loads(plan_path.read_text(encoding="utf-8"))
+    brief_bytes = brief_path.read_bytes()
+    binding = plan.get("curation_brief")
+    if not isinstance(binding, dict) or binding.get("json_file") != "curation-brief.json":
+        raise ValueError("temporary report source plan binding is invalid")
+    expected_hash = binding.get("json_sha256")
+    if not isinstance(expected_hash, str) or hashlib.sha256(brief_bytes).hexdigest() != expected_hash:
+        raise ValueError("temporary report source brief hash does not match its plan")
+    brief = json.loads(brief_bytes.decode("utf-8"))
+    if not isinstance(brief, dict):
+        raise ValueError("temporary report source brief is not an object")
+    if output.suffix.lower() == ".html":
+        run_bytes = (run_directory / "run.json").read_bytes()
+        run_record = json.loads(run_bytes.decode("utf-8"))
+        if run_record.get("run_id") != run_directory.name:
+            raise ValueError("temporary report source run ID does not match its directory")
+        expected_inventory_hash = run_record.get("output_file_hashes", {}).get("inventory.jsonl")
+        inventory_path = run_directory / "inventory.jsonl"
+        inventory_bytes = inventory_path.read_bytes()
+        if not isinstance(expected_inventory_hash, str) or hashlib.sha256(inventory_bytes).hexdigest() != expected_inventory_hash:
+            raise ValueError("temporary report source inventory hash does not match run.json")
+        records = [
+            json.loads(line)
+            for line in inventory_bytes.decode("utf-8").splitlines()
+            if line.strip()
+        ]
+        if not all(isinstance(record, dict) for record in records):
+            raise ValueError("temporary report source inventory is malformed")
+        return render_temporary_audit_html(
+            brief, records, hashlib.sha256(brief_bytes).hexdigest()
+        )
+    return render_temporary_audit_report(brief)
+
+
+def _write_temporary_report(output: Path, report: str) -> None:
+    if output == Path("-"):
+        return
+    if output.exists() or output.is_symlink():
+        raise FileExistsError(f"temporary report output already exists: {output}")
+    if not output.parent.is_dir():
+        raise ValueError(f"temporary report output parent is not a directory: {output.parent}")
+    with output.open("x", encoding="utf-8") as handle:
+        handle.write(report)

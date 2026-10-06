@@ -126,3 +126,12 @@ where compatibility matters most: immutable historical v1 classifications,
 v1/v2 curation briefs, a future supplied-export manifest, a future prior-run record,
 and a future run presented to the RO-Crate exporter. Future versions are
 rejected without rewriting original bytes or publishing a derived output.
+
+`repo-curator.semantic-adapter-observation.v1` and the source-specific
+`repo-curator.{dvc,mlflow,datalad,bagit}-observation.v1` contracts are emitted
+only by the opt-in `--advanced-review` audit mode. They contain bounded local
+observations and explicit limitations; they never imply that a workflow ran
+or that a declared result is reproducible. `repo-curator.near-duplicate-candidate.v1`
+is review-only and cannot authorize merge, archive, or deletion.
+`repo-curator.evidence-coverage.v1` records support, counter-evidence, missing
+evidence, and decision impact separately from confidence.
